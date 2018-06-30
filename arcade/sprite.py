@@ -7,15 +7,9 @@ https://www.gamedev.net/articles/programming/general-and-gameplay-programming/sp
 
 
 import math
+from typing import Sequence, Tuple
 
-
-from arcade.draw_commands import load_texture
-from arcade.draw_commands import draw_texture_rectangle
-from arcade.draw_commands import Texture
-from arcade.draw_commands import rotate_point
-
-from typing import Sequence
-from typing import Tuple
+from arcade.draw_commands import load_texture, draw_texture_rectangle, Texture, rotate_point
 
 FACE_RIGHT = 1
 FACE_LEFT = 2
@@ -103,13 +97,7 @@ class Sprite:
     >>> arcade.quick_run(0.25)
     """
 
-    def __init__(self,
-                 filename: str=None,
-                 scale: float=1,
-                 image_x: float=0, image_y: float=0,
-                 image_width: float=0, image_height: float=0,
-                 center_x: float=0, center_y: float=0,
-                 repeat_count_x=1, repeat_count_y=1):
+    def __init__(self, **kwargs):
         """
         Create a new sprite.
 
@@ -124,6 +112,8 @@ class Sprite:
             center_y (float): Location of the sprite
 
         """
+        image_width = kwargs.get('image_width', 0)
+        image_height = kwargs.get('image_height', 0)
 
         if image_width < 0:
             raise ValueError("Width of image can't be less than zero.")
@@ -136,8 +126,13 @@ class Sprite:
 
         if image_height == 0 and image_width != 0:
             raise ValueError("Height can't be zero.")
-
+            
+        filename = kwargs.get('filename')
+        scale = kwargs.get('scale', 1)
+        
         if filename is not None:
+            image_x = kwargs.get('image_x', 0)
+            image_y = kwargs.get('image_y', 0)
             self.texture = load_texture(filename, image_x, image_y,
                                         image_width, image_height)
 
@@ -149,6 +144,9 @@ class Sprite:
             self._texture = None
             self.width = 0
             self.height = 0
+            
+        center_x = kwargs.get('center_x', 0)
+        center_y = kwargs.get('center_y', 0)
 
         self.cur_texture_index = 0
         self.scale = scale
@@ -177,6 +175,9 @@ class Sprite:
         self.last_angle = 0
 
         self.force = [0, 0]
+        
+        repeat_count_x = kwargs.get('repeat_count_x', 1)
+        repeat_count_y = kwargs.get('repeat_count_y', 1)
 
         self.repeat_count_x = repeat_count_x
         self.repeat_count_y = repeat_count_y
